@@ -137,12 +137,73 @@ body {
 
 .chat-shell {
   display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 140px);
+  flex-direction: row;
+  min-height: calc(100vh - 180px);
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   overflow: hidden;
+}
+
+.chat-history {
+  width: 260px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.chat-history-head {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.chat-history-list {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+}
+
+.chat-session {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chat-session.active {
+  background: #eff6ff;
+}
+
+.chat-session-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #0f2744;
+}
+
+.chat-session-delete {
+  border: 0;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.chat-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-log {
@@ -170,7 +231,8 @@ body {
 }
 
 .bubble.assistant {
-  align-self: flex-start;
+  align-self: stretch;
+  max-width: 100%;
   background: #fff;
   border: 1px solid #e5e7eb;
 }

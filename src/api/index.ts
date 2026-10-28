@@ -1,6 +1,8 @@
 import type {
   Account,
+  ChatMessage,
   ChatResult,
+  ChatSession,
   DocumentBundle,
   GraphView,
   HybridHit,
@@ -166,6 +168,27 @@ export const aiApi = {
   },
   retrieve(question: string, limit = 5) {
     return api<{ question: string; items: HybridHit[] }>('/ai/retrieve', {
+      method: 'POST',
+      body: JSON.stringify({ question, limit }),
+    });
+  },
+  sessions() {
+    return api<{ list: ChatSession[] }>('/ai/sessions');
+  },
+  createSession(title?: string) {
+    return api<ChatSession>('/ai/sessions', {
+      method: 'POST',
+      body: JSON.stringify(title ? { title } : {}),
+    });
+  },
+  session(id: string) {
+    return api<{ session: ChatSession; messages: ChatMessage[] }>(`/ai/sessions/${id}`);
+  },
+  removeSession(id: string) {
+    return api<{ id: string }>(`/ai/sessions/${id}`, { method: 'DELETE' });
+  },
+  ask(id: string, question: string, limit = 5) {
+    return api<{ session: ChatSession; messages: ChatMessage[] }>(`/ai/sessions/${id}/messages`, {
       method: 'POST',
       body: JSON.stringify({ question, limit }),
     });
