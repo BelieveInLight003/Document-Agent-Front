@@ -16,7 +16,9 @@ import type {
   Team,
   TeamMember,
 } from '../types';
-import { api } from './client';
+import { api, authorizedFetch } from './client';
+
+export { authorizedFetch };
 
 function query(params: Record<string, string | number | undefined>) {
   const search = new URLSearchParams();

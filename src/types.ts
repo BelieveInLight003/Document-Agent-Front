@@ -136,12 +136,22 @@ export type ChatSession = {
   updatedAt: string;
 };
 
+export type ChatStep = {
+  id: string;
+  kind: 'fold' | 'action' | 'sources' | 'plan' | 'done';
+  title: string;
+  detail?: string;
+  status: 'running' | 'done';
+  sources?: Array<{ documentId: string; title: string; chapter: string | null }>;
+};
+
 export type ChatMessage = {
   id: string;
   sessionId: string;
   role: 'user' | 'assistant';
   content: string;
   items: HybridHit[] | null;
+  steps: ChatStep[] | null;
   createdAt: string;
 };
 

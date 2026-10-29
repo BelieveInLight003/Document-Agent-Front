@@ -63,6 +63,31 @@ async function refreshTokens() {
   return refreshing;
 }
 
+/** 给流式请求用。401 时先换 token，再把原始响应交回去，避免读掉 SSE。 */
+export async function authorizedFetch(input: RequestInfo | URL, init?: RequestInit) {
+  const headers = new Headers(init?.headers);
+  const token = getAccessToken();
+  if (token) headers.set('Authorization', `Bearer ${token}`);
+  const response = await fetch(input, { ...init, headers });
+  if (response.status !== 401) return response;
+  await response.body?.cancel().catch(() => undefined);
+  const refreshed = await refreshTokens();
+  if (!refreshed) {
+    clearSession();
+    if (!window.location.pathname.startsWith('/login')) {
+      window.location.assign('/login');
+    }
+    return new Response(JSON.stringify({ message: '登录已过期' }), {
+      status: 401,
+      headers: { 'content-type': 'application/json' },
+    });
+  }
+  const retryHeaders = new Headers(init?.headers);
+  const next = getAccessToken();
+  if (next) retryHeaders.set('Authorization', `Bearer ${next}`);
+  return fetch(input, { ...init, headers: retryHeaders });
+}
+
 export async function api<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const headers = new Headers();
   const token = getAccessToken();

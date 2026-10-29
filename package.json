@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ai-sdk/react": "^4.0.160",
     "@ant-design/icons": "^5.6.1",
+    "ai": "^7.0.156",
     "antd": "^5.27.4",
     "echarts": "^6.1.0",
     "react": "^18.3.1",
