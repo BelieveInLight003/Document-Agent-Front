@@ -471,6 +471,11 @@ body {
   border-radius: 8px;
 }
 
+.think-sources.cited {
+  list-style: none;
+  padding-left: 12px;
+}
+
 .think-sources li {
   margin: 4px 0;
 }

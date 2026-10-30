@@ -120,7 +120,8 @@ export type HybridHit = {
   chapter: string | null;
   content: string;
   score: number;
-  channels: Array<'keyword' | 'vector'>;
+  channels: Array<'keyword' | 'vector' | 'graph' | 'web'>;
+  url?: string;
 };
 
 export type ChatResult = {
@@ -142,7 +143,7 @@ export type ChatStep = {
   title: string;
   detail?: string;
   status: 'running' | 'done';
-  sources?: Array<{ documentId: string; title: string; chapter: string | null }>;
+  sources?: Array<{ documentId: string; title: string; chapter: string | null; index?: number; url?: string }>;
 };
 
 export type ChatMessage = {

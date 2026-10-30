@@ -269,6 +269,8 @@ function Thinking({ steps }: { steps: ChatStep[] }) {
                 <span className="think-running">
                   <LoadingOutlined /> 检索中
                 </span>
+              ) : step.detail ? (
+                <span className="think-running">{step.detail}</span>
               ) : null}
             </div>
           );
@@ -301,15 +303,39 @@ function Thinking({ steps }: { steps: ChatStep[] }) {
             </button>
             {open && step.kind === 'fold' && step.detail ? <p className="think-detail">{step.detail}</p> : null}
             {open && step.kind === 'sources' && (step.sources?.length ?? 0) > 0 ? (
-              <ol className="think-sources">
-                {step.sources?.map((source) => (
-                  <li key={source.documentId}>
-                    <Link to={`/documents/${source.documentId}`}>{source.title}</Link>
+              <ol
+                className={
+                  step.sources?.some((source) => source.index)
+                    ? 'think-sources cited'
+                    : 'think-sources'
+                }
+              >
+                {step.sources?.map((source) => {
+                  const webUrl = safeWebUrl(source.url);
+                  return (
+                  <li key={`${source.index ?? ''}-${source.documentId}-${webUrl || source.title}`}>
+                    {webUrl ? (
+                      <a href={webUrl} target="_blank" rel="noreferrer">
+                        {source.index ? `[${source.index}] ` : ''}
+                        {source.title}
+                      </a>
+                    ) : source.documentId ? (
+                      <Link to={`/documents/${source.documentId}`}>
+                        {source.index ? `[${source.index}] ` : ''}
+                        {source.title}
+                      </Link>
+                    ) : (
+                      <span>
+                        {source.index ? `[${source.index}] ` : ''}
+                        {source.title}
+                      </span>
+                    )}
                     {source.chapter && source.chapter !== source.title ? (
                       <span className="think-chapter">{source.chapter}</span>
                     ) : null}
                   </li>
-                ))}
+                  );
+                })}
               </ol>
             ) : null}
             {open && step.kind === 'sources' && !step.sources?.length && step.detail ? (
@@ -320,6 +346,17 @@ function Thinking({ steps }: { steps: ChatStep[] }) {
       })}
     </div>
   );
+}
+
+function safeWebUrl(value: string | undefined) {
+  if (!value) return '';
+  try {
+    const url = new URL(value);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return '';
+    return url.href;
+  } catch {
+    return '';
+  }
 }
 
 function AnswerBody({ text }: { text: string }) {
